@@ -1,3 +1,414 @@
+// Vaccines & Medicines Tab Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const vaccineTabButtons = document.querySelectorAll('.vaccine-tab-btn');
+    const vaccineTabContents = document.querySelectorAll('.vaccine-tab-content');
+    
+    // Initialize first tab as active
+    if (vaccineTabButtons.length > 0 && vaccineTabContents.length > 0) {
+        vaccineTabButtons[0].classList.add('active');
+        vaccineTabContents[0].classList.add('active');
+    }
+    
+    // Add click event listeners to vaccine tab buttons
+    vaccineTabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const targetCategory = this.getAttribute('data-category');
+            
+            // Remove active class from all buttons and contents
+            vaccineTabButtons.forEach(btn => btn.classList.remove('active'));
+            vaccineTabContents.forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked button and corresponding content
+            this.classList.add('active');
+            const targetContent = document.getElementById(targetCategory);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+            
+            // Smooth scroll to vaccines section
+            const vaccinesSection = document.getElementById('vaccines');
+            if (vaccinesSection) {
+                setTimeout(() => {
+                    vaccinesSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }, 100);
+            }
+        });
+    });
+    
+    // Add animation to vaccine cards when they come into view
+    const vaccineCards = document.querySelectorAll('.vaccine-card');
+    
+    const vaccineObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+    
+    // Observe all vaccine cards
+    vaccineCards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        vaccineObserver.observe(card);
+    });
+    
+    // Add order functionality for vaccine products
+    const vaccineOrderButtons = document.querySelectorAll('.btn-vaccine-order');
+    vaccineOrderButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const vaccineCard = this.closest('.vaccine-card');
+            const vaccineName = vaccineCard.querySelector('h3').textContent;
+            const vaccinePrice = vaccineCard.querySelector('.price-value').textContent;
+            
+            // Scroll to contact form
+            document.getElementById('contact').scrollIntoView({
+                behavior: 'smooth'
+            });
+            
+            // Pre-fill contact form with vaccine information
+            setTimeout(() => {
+                const messageField = document.getElementById('message');
+                if (messageField) {
+                    messageField.value = `I would like to order ${vaccineName} (${vaccinePrice})`;
+                    messageField.focus();
+                }
+            }, 1000);
+        });
+    });
+    
+    // Add hover effects for vaccine cards
+    vaccineCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+    
+    // Add search functionality for vaccines (similar to knowledge base)
+    const vaccineSearchInput = document.createElement('input');
+    vaccineSearchInput.type = 'text';
+    vaccineSearchInput.placeholder = 'Search vaccines and medicines...';
+    vaccineSearchInput.className = 'vaccine-search';
+    vaccineSearchInput.style.cssText = `
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto 2rem;
+        padding: 1rem;
+        border: 2px solid #8B4513;
+        border-radius: 25px;
+        font-size: 1rem;
+        display: block;
+        outline: none;
+        transition: border-color 0.3s ease;
+    `;
+    
+    // Insert search input before vaccine tabs
+    const vaccineSection = document.querySelector('#vaccines .section-intro');
+    if (vaccineSection) {
+        vaccineSection.parentNode.insertBefore(vaccineSearchInput, vaccineSection.nextSibling);
+    }
+    
+    // Add search functionality for vaccines
+    vaccineSearchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        // If search term is empty, show all content
+        if (searchTerm === '') {
+            vaccineTabContents.forEach(content => {
+                content.style.display = content.classList.contains('active') ? 'block' : 'none';
+            });
+            document.querySelector('.vaccine-categories .category-tabs').style.display = 'flex';
+            document.querySelector('.vaccine-info-banner').style.display = 'block';
+            return;
+        }
+        
+        // Hide category tabs and info banner during search
+        document.querySelector('.vaccine-categories .category-tabs').style.display = 'none';
+        document.querySelector('.vaccine-info-banner').style.display = 'none';
+        
+        // Search through all vaccine cards
+        let hasResults = false;
+        vaccineTabContents.forEach(content => {
+            const cards = content.querySelectorAll('.vaccine-card');
+            let contentHasResults = false;
+            
+            cards.forEach(card => {
+                const cardText = card.textContent.toLowerCase();
+                if (cardText.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    contentHasResults = true;
+                    hasResults = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show content if it has matching cards
+            content.style.display = contentHasResults ? 'block' : 'none';
+        });
+        
+        // Show no results message if needed
+        let noResultsMsg = document.querySelector('.vaccine-no-results');
+        if (!hasResults && !noResultsMsg) {
+            noResultsMsg = document.createElement('div');
+            noResultsMsg.className = 'vaccine-no-results';
+            noResultsMsg.innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: #666;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+                    <h3>No results found for "${this.value}"</h3>
+                    <p>Try searching for terms like "vaccine", "antibiotic", "supplement", or "equipment"</p>
+                </div>
+            `;
+            document.querySelector('.vaccine-content').appendChild(noResultsMsg);
+        } else if (hasResults && noResultsMsg) {
+            noResultsMsg.remove();
+        }
+    });
+    
+    // Add clear search button for vaccines
+    const vaccineClearBtn = document.createElement('button');
+    vaccineClearBtn.textContent = 'Clear';
+    vaccineClearBtn.className = 'vaccine-clear-search-btn';
+    vaccineClearBtn.style.cssText = `
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #8B4513;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        display: none;
+        font-size: 12px;
+    `;
+    
+    // Position the vaccine search input container
+    vaccineSearchInput.parentNode.style.position = 'relative';
+    vaccineSearchInput.parentNode.appendChild(vaccineClearBtn);
+    
+    // Show/hide clear button
+    vaccineSearchInput.addEventListener('input', function() {
+        vaccineClearBtn.style.display = this.value ? 'block' : 'none';
+    });
+    
+    // Clear search functionality
+    vaccineClearBtn.addEventListener('click', function() {
+        vaccineSearchInput.value = '';
+        vaccineSearchInput.dispatchEvent(new Event('input'));
+        vaccineSearchInput.focus();
+    });
+});
+
+// Enhanced Landing Page Features
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate hero stats counters
+    const statNumbers = document.querySelectorAll('.stat-number');
+    const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const target = entry.target;
+                const finalText = target.textContent;
+                const number = parseInt(finalText.replace(/[^0-9]/g, ''));
+                const suffix = finalText.replace(/[0-9]/g, '');
+                
+                if (!isNaN(number)) {
+                    animateCounter(target, number, suffix, 2000);
+                }
+                statsObserver.unobserve(target);
+            }
+        });
+    }, observerOptions);
+    
+    statNumbers.forEach(stat => statsObserver.observe(stat));
+    
+    // Enhanced parallax effect for hero section
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const hero = document.querySelector('.hero');
+        const heroContent = document.querySelector('.hero-content');
+        const particles = document.querySelector('.hero-particles');
+        const floatingIcons = document.querySelectorAll('.floating-icon');
+        
+        if (hero && heroContent) {
+            heroContent.style.transform = `translateY(${scrolled * 0.4}px)`;
+            heroContent.style.opacity = 1 - scrolled / 800;
+        }
+        
+        if (particles) {
+            particles.style.transform = `translateY(${scrolled * 0.2}px)`;
+        }
+        
+        floatingIcons.forEach((icon, index) => {
+            const speed = 0.1 + (index * 0.05);
+            icon.style.transform = `translateY(${scrolled * speed}px)`;
+        });
+    });
+    
+    // Add hover effect to hero buttons
+    const heroButtons = document.querySelectorAll('.btn-primary, .btn-secondary');
+    heroButtons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px) scale(1.05)';
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+    
+    // Add ripple effect to buttons
+    heroButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.5);
+                left: ${x}px;
+                top: ${y}px;
+                pointer-events: none;
+                transform: scale(0);
+                animation: ripple 0.6s ease-out;
+            `;
+            
+            this.style.position = 'relative';
+            this.style.overflow = 'hidden';
+            this.appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+    
+    // Add CSS for ripple animation
+    const rippleStyle = document.createElement('style');
+    rippleStyle.textContent = `
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(rippleStyle);
+    
+    // Enhanced chick animations
+    const chicks = document.querySelectorAll('.chick');
+    chicks.forEach((chick, index) => {
+        chick.addEventListener('mouseenter', function() {
+            this.style.transform = `scale(1.3) rotate(${Math.random() * 20 - 10}deg)`;
+            this.style.filter = 'brightness(1.2)';
+        });
+        
+        chick.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1) rotate(0deg)';
+            this.style.filter = 'brightness(1)';
+        });
+        
+        // Add random floating animations
+        setInterval(() => {
+            const randomX = Math.random() * 20 - 10;
+            const randomY = Math.random() * 20 - 10;
+            const randomRotate = Math.random() * 10 - 5;
+            
+            chick.style.transition = 'transform 0.5s ease';
+            chick.style.transform = `translateX(${randomX}px) translateY(${randomY}px) rotate(${randomRotate}deg)`;
+        }, 3000 + (index * 1000));
+    });
+    
+    // Add dynamic particle generation
+    const heroParticles = document.querySelector('.hero-particles');
+    if (heroParticles) {
+        setInterval(() => {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: absolute;
+                width: ${Math.random() * 10 + 5}px;
+                height: ${Math.random() * 10 + 5}px;
+                background: rgba(255, 255, 255, ${Math.random() * 0.3 + 0.1});
+                border-radius: 50%;
+                left: ${Math.random() * 100}%;
+                top: 100%;
+                pointer-events: none;
+                animation: rise-particle ${Math.random() * 3 + 2}s ease-out forwards;
+            `;
+            
+            heroParticles.appendChild(particle);
+            
+            setTimeout(() => particle.remove(), 5000);
+        }, 2000);
+    }
+    
+    // Add CSS for rising particle animation
+    const particleStyle = document.createElement('style');
+    particleStyle.textContent = `
+        @keyframes rise-particle {
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(particleStyle);
+    
+    // Add smooth reveal animation for hero elements
+    const heroElements = document.querySelectorAll('.hero-badge, .hero-title, .hero-subtitle, .hero-description, .hero-stats, .hero-features, .hero-cta');
+    heroElements.forEach((element, index) => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+            element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }, 100 * index);
+    });
+});
+
+// Counter animation function
+function animateCounter(element, target, suffix, duration) {
+    let start = 0;
+    const increment = target / (duration / 16);
+    
+    function updateCounter() {
+        start += increment;
+        if (start < target) {
+            element.textContent = Math.floor(start) + suffix;
+            requestAnimationFrame(updateCounter);
+        } else {
+            element.textContent = target + suffix;
+        }
+    }
+    
+    updateCounter();
+}
+
 // Knowledge Base Tab Functionality
 document.addEventListener('DOMContentLoaded', function() {
     const tabButtons = document.querySelectorAll('.tab-btn');

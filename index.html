@@ -18,6 +18,7 @@
                     <li><a href="#home" class="nav-link">Home</a></li>
                     <li><a href="#about" class="nav-link">About</a></li>
                     <li><a href="#products" class="nav-link">Products</a></li>
+                    <li><a href="#vaccines" class="nav-link">Vaccines & Medicines</a></li>
                     <li><a href="#knowledge" class="nav-link">Knowledge Base</a></li>
                     <li><a href="#contact" class="nav-link">Contact</a></li>
                 </ul>
@@ -33,11 +34,30 @@
     <main>
         <section id="home" class="hero">
             <div class="hero-container">
+                <div class="hero-particles"></div>
                 <div class="hero-content">
                     <div class="hero-text">
+                        <div class="hero-badge">
+                            <span class="badge-icon">🏆</span>
+                            <span>Quality Since 2024</span>
+                        </div>
                         <h1 class="hero-title">WHITE HORSE</h1>
                         <h2 class="hero-subtitle">ROAD RUNNER CHICKS</h2>
-                        <p class="hero-description">Quality Day Old Chicks</p>
+                        <p class="hero-description">Premium Quality Day Old Chicks for Zimbabwean Farmers</p>
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">100%</span>
+                                <span class="stat-label">Female Guaranteed</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">24/7</span>
+                                <span class="stat-label">Support</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">USD 1</span>
+                                <span class="stat-label">Per Chick</span>
+                            </div>
+                        </div>
                         <div class="hero-features">
                             <div class="feature">
                                 <span class="feature-icon">🐔</span>
@@ -52,14 +72,28 @@
                                 <span>High Quality</span>
                             </div>
                         </div>
+                        <div class="hero-cta">
+                            <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})">View Products</button>
+                            <button class="btn-secondary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Contact Us</button>
+                        </div>
                     </div>
                     <div class="hero-image">
                         <div class="chick-container">
                             <div class="chick chick-1">🐤</div>
                             <div class="chick chick-2">🐥</div>
+                            <div class="floating-icons">
+                                <div class="floating-icon icon-1">🌾</div>
+                                <div class="floating-icon icon-2">🥚</div>
+                                <div class="floating-icon icon-3">🌱</div>
+                                <div class="floating-icon icon-4">🚜</div>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="hero-scroll-indicator">
+                <div class="scroll-arrow"></div>
+                <span>Scroll Down</span>
             </div>
         </section>
 
@@ -114,6 +148,433 @@
                             <li>Vaccinated</li>
                         </ul>
                         <button class="btn-order">Order Now</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="vaccines" class="vaccines">
+            <div class="container">
+                <h2>Vaccines & Medicines</h2>
+                <p class="section-intro">Essential health products for your flock's wellbeing</p>
+                
+                <div class="vaccine-categories">
+                    <div class="category-tabs">
+                        <button class="vaccine-tab-btn active" data-category="vaccines">Vaccines</button>
+                        <button class="vaccine-tab-btn" data-category="medicines">Medicines</button>
+                        <button class="vaccine-tab-btn" data-category="supplements">Supplements</button>
+                        <button class="vaccine-tab-btn" data-category="equipment">Equipment</button>
+                    </div>
+                    
+                    <div class="vaccine-content">
+                        <!-- Vaccines Category -->
+                        <div class="vaccine-tab-content active" id="vaccines">
+                            <div class="vaccine-grid">
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">💉</span>
+                                        <div class="vaccine-info">
+                                            <h3>Newcastle Disease Vaccine</h3>
+                                            <span class="vaccine-type">Live Vaccine</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>For prevention of Newcastle disease</li>
+                                            <li>Administer at 1-2 weeks of age</li>
+                                            <li>Booster at 4-6 weeks</li>
+                                            <li>1000 doses per vial</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 15</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">🦠</span>
+                                        <div class="vaccine-info">
+                                            <h3>Infectious Bronchitis Vaccine</h3>
+                                            <span class="vaccine-type">Live Vaccine</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>Prevents respiratory disease</li>
+                                            <li>Give at 1-2 weeks old</li>
+                                            <li>Repeat at 4-6 weeks</li>
+                                            <li>Safe for all breeds</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 12</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">🛡️</span>
+                                        <div class="vaccine-info">
+                                            <h3>Gumboro Disease Vaccine</h3>
+                                            <span class="vaccine-type">Live Vaccine</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>Prevents immunosuppression</li>
+                                            <li>Administer at 2-3 weeks</li>
+                                            <li>Critical for flock health</li>
+                                            <li>1000 doses available</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 18</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">🐓</span>
+                                        <div class="vaccine-info">
+                                            <h3>Fowl Pox Vaccine</h3>
+                                            <span class="vaccine-type">Live Vaccine</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>Prevents fowl pox disease</li>
+                                            <li>Wing stab method</li>
+                                            <li>Give at 6-8 weeks</li>
+                                            <li>Long-lasting immunity</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 10</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Medicines Category -->
+                        <div class="vaccine-tab-content" id="medicines">
+                            <div class="vaccine-grid">
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">💊</span>
+                                        <div class="vaccine-info">
+                                            <h3>Antibiotic Broad Spectrum</h3>
+                                            <span class="vaccine-type">Oral Solution</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>Treats bacterial infections</li>
+                                            <li>For respiratory issues</li>
+                                            <li>100ml bottle</li>
+                                            <li>Mix with drinking water</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 8</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">🩹</span>
+                                        <div class="vaccine-info">
+                                            <h3>Coccidiostat</h3>
+                                            <span class="vaccine-type">Powder</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>Prevents coccidiosis</li>
+                                            <li>For chicks 1-8 weeks</li>
+                                            <li>500g pack</li>
+                                            <li>Mix with feed</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 6</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">🌿</span>
+                                        <div class="vaccine-info">
+                                            <h3>Dewormer</h3>
+                                            <span class="vaccine-type">Oral Suspension</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>Removes intestinal worms</li>
+                                            <li>For all age groups</li>
+                                            <li>100ml bottle</li>
+                                            <li>Repeat every 3 months</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 5</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">🧴</span>
+                                        <div class="vaccine-info">
+                                            <h3>Vitamin B Complex</h3>
+                                            <span class="vaccine-type">Injectable</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>Boosts immunity</li>
+                                            <li>Stress relief</li>
+                                            <li>100ml vial</li>
+                                            <li>For sick birds</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 4</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Supplements Category -->
+                        <div class="vaccine-tab-content" id="supplements">
+                            <div class="vaccine-grid">
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">🥚</span>
+                                        <div class="vaccine-info">
+                                            <h3>Calcium Supplement</h3>
+                                            <span class="vaccine-type">Powder</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>Strong egg shells</li>
+                                            <li>For layers</li>
+                                            <li>1kg pack</li>
+                                            <li>Mix with feed</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 3</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">🌾</span>
+                                        <div class="vaccine-info">
+                                            <h3>Probiotics</h3>
+                                            <span class="vaccine-type">Powder</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>Improves digestion</li>
+                                            <li>Healthy gut flora</li>
+                                            <li>500g pack</li>
+                                            <li>For all ages</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 7</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">💪</span>
+                                        <div class="vaccine-info">
+                                            <h3>Protein Supplement</h3>
+                                            <span class="vaccine-type">Powder</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>Growth promoter</li>
+                                            <li>For meat birds</li>
+                                            <li>2kg pack</li>
+                                            <li>High protein content</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 9</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">🌊</span>
+                                        <div class="vaccine-info">
+                                            <h3>Electrolytes</h3>
+                                            <span class="vaccine-type">Powder</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>Rehydration</li>
+                                            <li>Heat stress relief</li>
+                                            <li>1kg pack</li>
+                                            <li>Mix with water</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 5</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Equipment Category -->
+                        <div class="vaccine-tab-content" id="equipment">
+                            <div class="vaccine-grid">
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">💉</span>
+                                        <div class="vaccine-info">
+                                            <h3>Syringes & Needles</h3>
+                                            <span class="vaccine-type">Kit</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>10 syringes + needles</li>
+                                            <li>3ml capacity</li>
+                                            <li>Sterile packaging</li>
+                                            <li>For vaccine administration</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 2</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">🌡️</span>
+                                        <div class="vaccine-info">
+                                            <h3>Thermometer</h3>
+                                            <span class="vaccine-type">Digital</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>Brooder temperature</li>
+                                            <li>Accurate readings</li>
+                                            <li>Battery included</li>
+                                            <li>Celsius & Fahrenheit</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 6</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">🧴</span>
+                                        <div class="vaccine-info">
+                                            <h3>Disinfectant</h3>
+                                            <span class="vaccine-type">Liquid</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>Poultry house cleaning</li>
+                                            <li>1 liter bottle</li>
+                                            <li>Broad spectrum</li>
+                                            <li>Safe for birds</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 4</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="vaccine-card">
+                                    <div class="vaccine-header">
+                                        <span class="vaccine-icon">📦</span>
+                                        <div class="vaccine-info">
+                                            <h3>First Aid Kit</h3>
+                                            <span class="vaccine-type">Complete</span>
+                                        </div>
+                                    </div>
+                                    <div class="vaccine-details">
+                                        <ul class="vaccine-features">
+                                            <li>Essential medical supplies</li>
+                                            <li>Wound treatment</li>
+                                            <li>Bandages + antiseptic</li>
+                                            <li>Emergency care</li>
+                                        </ul>
+                                        <div class="vaccine-price">
+                                            <span class="price-label">Price:</span>
+                                            <span class="price-value">USD 12</span>
+                                        </div>
+                                        <button class="btn-vaccine-order">Order Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="vaccine-info-banner">
+                    <div class="banner-content">
+                        <h3>🏥 Professional Veterinary Support</h3>
+                        <p>All our vaccines and medicines are sourced from reputable manufacturers and come with usage instructions. For vaccination schedules and dosage information, consult our Knowledge Base or contact our veterinary support team.</p>
+                        <div class="banner-features">
+                            <div class="banner-feature">
+                                <span class="banner-icon">✅</span>
+                                <span>Quality Guaranteed</span>
+                            </div>
+                            <div class="banner-feature">
+                                <span class="banner-icon">📦</span>
+                                <span>Fast Delivery</span>
+                            </div>
+                            <div class="banner-feature">
+                                <span class="banner-icon">📞</span>
+                                <span>Expert Support</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -500,6 +961,7 @@
                         <li><a href="#home">Home</a></li>
                         <li><a href="#about">About</a></li>
                         <li><a href="#products">Products</a></li>
+                        <li><a href="#vaccines">Vaccines & Medicines</a></li>
                         <li><a href="#knowledge">Knowledge Base</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
