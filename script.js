@@ -1,0 +1,593 @@
+// Knowledge Base Tab Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    // Initialize first tab as active
+    if (tabButtons.length > 0 && tabContents.length > 0) {
+        tabButtons[0].classList.add('active');
+        tabContents[0].classList.add('active');
+    }
+    
+    // Add click event listeners to tab buttons
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const targetCategory = this.getAttribute('data-category');
+            
+            // Remove active class from all buttons and contents
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked button and corresponding content
+            this.classList.add('active');
+            const targetContent = document.getElementById(targetCategory);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+            
+            // Smooth scroll to knowledge base section
+            const knowledgeSection = document.getElementById('knowledge');
+            if (knowledgeSection) {
+                setTimeout(() => {
+                    knowledgeSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }, 100);
+            }
+        });
+    });
+    
+    // Add animation to knowledge cards when they come into view
+    const knowledgeCards = document.querySelectorAll('.knowledge-card');
+    const tipCards = document.querySelectorAll('.tip-card');
+    
+    const knowledgeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+    
+    // Observe all knowledge and tip cards
+    [...knowledgeCards, ...tipCards].forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        knowledgeObserver.observe(card);
+    });
+    
+    // Add search functionality for knowledge base
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.placeholder = 'Search knowledge base...';
+    searchInput.className = 'knowledge-search';
+    searchInput.style.cssText = `
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto 2rem;
+        padding: 1rem;
+        border: 2px solid #8B4513;
+        border-radius: 25px;
+        font-size: 1rem;
+        display: block;
+        outline: none;
+        transition: border-color 0.3s ease;
+    `;
+    
+    // Insert search input before category tabs
+    const knowledgeIntro = document.querySelector('.knowledge-intro');
+    if (knowledgeIntro) {
+        knowledgeIntro.parentNode.insertBefore(searchInput, knowledgeIntro.nextSibling);
+    }
+    
+    // Add search functionality
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        // If search term is empty, show all content
+        if (searchTerm === '') {
+            tabContents.forEach(content => {
+                content.style.display = content.classList.contains('active') ? 'block' : 'none';
+            });
+            document.querySelector('.category-tabs').style.display = 'flex';
+            document.querySelector('.quick-tips').style.display = 'block';
+            return;
+        }
+        
+        // Hide category tabs and quick tips during search
+        document.querySelector('.category-tabs').style.display = 'none';
+        document.querySelector('.quick-tips').style.display = 'none';
+        
+        // Search through all knowledge cards
+        let hasResults = false;
+        tabContents.forEach(content => {
+            const cards = content.querySelectorAll('.knowledge-card');
+            let contentHasResults = false;
+            
+            cards.forEach(card => {
+                const cardText = card.textContent.toLowerCase();
+                if (cardText.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    contentHasResults = true;
+                    hasResults = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show content if it has matching cards
+            content.style.display = contentHasResults ? 'block' : 'none';
+        });
+        
+        // Show no results message if needed
+        let noResultsMsg = document.querySelector('.no-results');
+        if (!hasResults && !noResultsMsg) {
+            noResultsMsg = document.createElement('div');
+            noResultsMsg.className = 'no-results';
+            noResultsMsg.innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: #666;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+                    <h3>No results found for "${this.value}"</h3>
+                    <p>Try searching for terms like "temperature", "feeding", "health", or "brooder"</p>
+                </div>
+            `;
+            document.querySelector('.category-content').appendChild(noResultsMsg);
+        } else if (hasResults && noResultsMsg) {
+            noResultsMsg.remove();
+        }
+    });
+    
+    // Add clear search button
+    const clearBtn = document.createElement('button');
+    clearBtn.textContent = 'Clear';
+    clearBtn.className = 'clear-search-btn';
+    clearBtn.style.cssText = `
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #8B4513;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        display: none;
+        font-size: 12px;
+    `;
+    
+    // Position the search input container
+    searchInput.parentNode.style.position = 'relative';
+    searchInput.parentNode.appendChild(clearBtn);
+    
+    // Show/hide clear button
+    searchInput.addEventListener('input', function() {
+        clearBtn.style.display = this.value ? 'block' : 'none';
+    });
+    
+    // Clear search functionality
+    clearBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input'));
+        searchInput.focus();
+    });
+    
+    // Add keyboard navigation for tabs
+    document.addEventListener('keydown', function(e) {
+        if (e.target.classList.contains('tab-btn')) {
+            const currentIndex = Array.from(tabButtons).indexOf(e.target);
+            
+            if (e.key === 'ArrowRight' && currentIndex < tabButtons.length - 1) {
+                tabButtons[currentIndex + 1].focus();
+                tabButtons[currentIndex + 1].click();
+            } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                tabButtons[currentIndex - 1].focus();
+                tabButtons[currentIndex - 1].click();
+            }
+        }
+    });
+    
+    // Add print functionality for knowledge base
+    const printBtn = document.createElement('button');
+    printBtn.textContent = '🖨️ Print Guide';
+    printBtn.className = 'print-btn';
+    printBtn.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #8B4513;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 1rem 1.5rem;
+        cursor: pointer;
+        font-weight: 600;
+        z-index: 1000;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+    `;
+    
+    document.body.appendChild(printBtn);
+    
+    // Only show print button when on knowledge base section
+    window.addEventListener('scroll', function() {
+        const knowledgeSection = document.getElementById('knowledge');
+        if (knowledgeSection) {
+            const rect = knowledgeSection.getBoundingClientRect();
+            if (rect.top <= 100 && rect.bottom >= 100) {
+                printBtn.style.display = 'block';
+            } else {
+                printBtn.style.display = 'none';
+            }
+        }
+    });
+    
+    printBtn.addEventListener('click', function() {
+        window.print();
+    });
+    
+    // Add print styles
+    const printStyles = document.createElement('style');
+    printStyles.textContent = `
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #knowledge, #knowledge * {
+                visibility: visible;
+            }
+            #knowledge {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .tab-btn, .knowledge-search, .clear-search-btn, .print-btn, .header, .footer {
+                display: none !important;
+            }
+            .tab-content {
+                display: block !important;
+            }
+            .knowledge-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+        }
+    `;
+    document.head.appendChild(printStyles);
+});
+
+// Mobile Navigation Toggle
+const hamburger = document.querySelector('.hamburger');
+const navMenu = document.querySelector('.nav-menu');
+const navLinks = document.querySelectorAll('.nav-link');
+
+hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    navMenu.classList.toggle('active');
+});
+
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+    });
+});
+
+// Smooth Scrolling for Navigation Links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Header Scroll Effect
+window.addEventListener('scroll', () => {
+    const header = document.querySelector('.header');
+    if (window.scrollY > 100) {
+        header.style.background = 'rgba(255, 255, 255, 0.98)';
+        header.style.boxShadow = '0 5px 30px rgba(0, 0, 0, 0.15)';
+    } else {
+        header.style.background = 'rgba(255, 255, 255, 0.95)';
+        header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+    }
+});
+
+// Intersection Observer for Animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, observerOptions);
+
+// Observe elements for animation
+document.addEventListener('DOMContentLoaded', () => {
+    const animatedElements = document.querySelectorAll('.about-card, .product-card, .contact-item');
+    
+    animatedElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+});
+
+// Form Validation and Submission
+const orderForm = document.getElementById('orderForm');
+if (orderForm) {
+    orderForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const formData = {
+            name: document.getElementById('name').value.trim(),
+            phone: document.getElementById('phone').value.trim(),
+            quantity: document.getElementById('quantity').value.trim(),
+            message: document.getElementById('message').value.trim()
+        };
+        
+        // Validation
+        let isValid = true;
+        let errorMessage = '';
+        
+        if (!formData.name) {
+            errorMessage = 'Please enter your name';
+            isValid = false;
+        } else if (!formData.phone) {
+            errorMessage = 'Please enter your phone number';
+            isValid = false;
+        } else if (!formData.quantity) {
+            errorMessage = 'Please enter the number of chicks you want';
+            isValid = false;
+        } else if (isNaN(formData.quantity) || formData.quantity <= 0) {
+            errorMessage = 'Please enter a valid number of chicks';
+            isValid = false;
+        } else if (formData.phone.length < 10) {
+            errorMessage = 'Please enter a valid phone number';
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            showNotification(errorMessage, 'error');
+            return;
+        }
+        
+        // Simulate form submission
+        const submitBtn = orderForm.querySelector('.btn-submit');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Sending...';
+        submitBtn.disabled = true;
+        
+        setTimeout(() => {
+            // Show success message
+            showNotification('Order placed successfully! We will contact you soon.', 'success');
+            
+            // Reset form
+            orderForm.reset();
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            
+            // Log the order (in a real application, this would be sent to a server)
+            console.log('Order placed:', formData);
+        }, 2000);
+    });
+}
+
+// Notification System
+function showNotification(message, type = 'info') {
+    // Remove existing notifications
+    const existingNotification = document.querySelector('.notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    
+    // Add styles
+    notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        color: white;
+        font-weight: 600;
+        z-index: 10000;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+        max-width: 300px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    `;
+    
+    // Set background color based on type
+    switch(type) {
+        case 'success':
+            notification.style.background = 'linear-gradient(45deg, #28a745, #20c997)';
+            break;
+        case 'error':
+            notification.style.background = 'linear-gradient(45deg, #dc3545, #c82333)';
+            break;
+        default:
+            notification.style.background = 'linear-gradient(45deg, #007bff, #0056b3)';
+    }
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 5000);
+}
+
+// Order Button Click Handlers
+document.querySelectorAll('.btn-order').forEach(button => {
+    button.addEventListener('click', function() {
+        const productCard = this.closest('.product-card');
+        const productName = productCard.querySelector('h3').textContent;
+        const productPrice = productCard.querySelector('.price').textContent;
+        
+        // Scroll to contact form
+        document.getElementById('contact').scrollIntoView({
+            behavior: 'smooth'
+        });
+        
+        // Pre-fill some information if needed
+        setTimeout(() => {
+            const messageField = document.getElementById('message');
+            if (messageField) {
+                messageField.value = `I'm interested in ordering ${productName} (${productPrice})`;
+                messageField.focus();
+            }
+        }, 1000);
+    });
+});
+
+// Add hover effect to chicks
+document.querySelectorAll('.chick').forEach(chick => {
+    chick.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.2) rotate(10deg)';
+        this.style.transition = 'transform 0.3s ease';
+    });
+    
+    chick.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1) rotate(0deg)';
+    });
+});
+
+// Parallax effect for hero section
+window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    const hero = document.querySelector('.hero');
+    const heroContent = document.querySelector('.hero-content');
+    
+    if (hero && heroContent) {
+        heroContent.style.transform = `translateY(${scrolled * 0.5}px)`;
+        heroContent.style.opacity = 1 - scrolled / 800;
+    }
+});
+
+// Add typing effect to hero title
+function typeWriter(element, text, speed = 100) {
+    let i = 0;
+    element.textContent = '';
+    
+    function type() {
+        if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+        }
+    }
+    
+    type();
+}
+
+// Initialize typing effect when page loads
+window.addEventListener('load', () => {
+    const heroTitle = document.querySelector('.hero-title');
+    const heroSubtitle = document.querySelector('.hero-subtitle');
+    
+    if (heroTitle && heroSubtitle) {
+        setTimeout(() => {
+            typeWriter(heroTitle, 'WHITE HORSE', 150);
+            setTimeout(() => {
+                typeWriter(heroSubtitle, 'ROAD RUNNER CHICKS', 150);
+            }, 2000);
+        }, 500);
+    }
+});
+
+// Add loading animation
+window.addEventListener('load', () => {
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.5s ease';
+    
+    setTimeout(() => {
+        document.body.style.opacity = '1';
+    }, 100);
+});
+
+// Counter animation for statistics (if needed)
+function animateCounter(element, target, duration = 2000) {
+    let start = 0;
+    const increment = target / (duration / 16);
+    
+    function updateCounter() {
+        start += increment;
+        if (start < target) {
+            element.textContent = Math.floor(start);
+            requestAnimationFrame(updateCounter);
+        } else {
+            element.textContent = target;
+        }
+    }
+    
+    updateCounter();
+}
+
+// Add hover sound effect (optional)
+function playHoverSound() {
+    // Create a simple beep sound using Web Audio API
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = 800;
+    oscillator.type = 'sine';
+    
+    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.1);
+}
+
+// Add hover sound to buttons (optional)
+document.querySelectorAll('button').forEach(button => {
+    button.addEventListener('mouseenter', () => {
+        try {
+            playHoverSound();
+        } catch (e) {
+            // Ignore if audio context is not supported
+        }
+    });
+});
