@@ -1,3 +1,179 @@
+// Newsletter Section Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const newsletterForm = document.getElementById('newsletterForm');
+    
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const formData = {
+                fullName: document.getElementById('fullName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                farmSize: document.getElementById('farmSize').value,
+                tips: document.getElementById('tips').checked,
+                market: document.getElementById('market').checked,
+                offers: document.getElementById('offers').checked
+            };
+            
+            // Validation
+            let isValid = true;
+            let errorMessage = '';
+            
+            if (!formData.fullName) {
+                errorMessage = 'Please enter your full name';
+                isValid = false;
+            } else if (!formData.email) {
+                errorMessage = 'Please enter your email address';
+                isValid = false;
+            } else if (!isValidEmail(formData.email)) {
+                errorMessage = 'Please enter a valid email address';
+                isValid = false;
+            } else if (!formData.farmSize) {
+                errorMessage = 'Please select your farm size';
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                showNotification(errorMessage, 'error');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = newsletterForm.querySelector('.btn-newsletter');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="btn-text">Subscribing...</span><span class="btn-icon">⏳</span>';
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Show success message
+                showNotification('Successfully subscribed! Check your email for a confirmation message.', 'success');
+                
+                // Reset form
+                newsletterForm.reset();
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+                // Log the subscription (in a real application, this would be sent to a server)
+                console.log('Newsletter subscription:', formData);
+                
+                // Add to local storage for demo purposes
+                const subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]');
+                subscribers.push({
+                    ...formData,
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem('newsletterSubscribers', JSON.stringify(subscribers));
+            }, 2000);
+        });
+    }
+    
+    // Email validation function
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+    
+    // Add animation to newsletter elements when they come into view
+    const newsletterElements = document.querySelectorAll('.newsletter-feature, .form-card, .testimonial-card');
+    
+    const newsletterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+    
+    newsletterElements.forEach(element => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(30px)';
+        element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        newsletterObserver.observe(element);
+    });
+    
+    // Add interactive effects to form inputs
+    const inputs = document.querySelectorAll('#newsletterForm input, #newsletterForm select');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'scale(1.02)';
+            this.parentElement.style.transition = 'transform 0.3s ease';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+        });
+    });
+    
+    // Add hover effect to newsletter features
+    const newsletterFeatures = document.querySelectorAll('.newsletter-feature');
+    newsletterFeatures.forEach(feature => {
+        feature.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px) scale(1.02)';
+            this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.2)';
+        });
+        
+        feature.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+            this.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.1)';
+        });
+    });
+    
+    // Add ripple effect to newsletter button
+    const newsletterBtn = document.querySelector('.btn-newsletter');
+    if (newsletterBtn) {
+        newsletterBtn.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.5);
+                left: ${x}px;
+                top: ${y}px;
+                pointer-events: none;
+                transform: scale(0);
+                animation: ripple 0.6s ease-out;
+            `;
+            
+            this.style.position = 'relative';
+            this.style.overflow = 'hidden';
+            this.appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 600);
+        });
+    }
+    
+    // Add subscriber count display (demo feature)
+    const subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]');
+    const subscriberCount = document.createElement('div');
+    subscriberCount.className = 'subscriber-count';
+    subscriberCount.innerHTML = `
+        <div style="text-align: center; margin-top: 2rem; padding: 1rem; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            <span style="font-size: 2rem;">👥</span>
+            <p style="margin: 0.5rem 0 0 0; color: #8B4513; font-weight: 600;">${subscribers.length}+ Farmers Subscribed</p>
+            <p style="margin: 0; color: #666; font-size: 0.9rem;">Join our growing community!</p>
+        </div>
+    `;
+    
+    // Insert subscriber count after the form
+    const formCard = document.querySelector('.form-card');
+    if (formCard && subscribers.length > 0) {
+        formCard.parentNode.insertBefore(subscriberCount, formCard.nextSibling);
+    }
+});
+
 // Vaccines & Medicines Tab Functionality
 document.addEventListener('DOMContentLoaded', function() {
     const vaccineTabButtons = document.querySelectorAll('.vaccine-tab-btn');
