@@ -1,3 +1,253 @@
+// Shopping Cart Functionality
+class ShoppingCart {
+    constructor() {
+        this.items = JSON.parse(localStorage.getItem('cartItems')) || [];
+        this.cartCount = document.getElementById('cartCount');
+        this.cartItems = document.getElementById('cartItems');
+        this.cartTotal = document.getElementById('cartTotal');
+        this.cartSidebar = document.getElementById('cartSidebar');
+        this.cartOverlay = document.getElementById('cartOverlay');
+        this.cartToggle = document.getElementById('cartToggle');
+        this.cartClose = document.getElementById('cartClose');
+        this.btnCheckout = document.getElementById('btnCheckout');
+        this.btnContinue = document.getElementById('btnContinue');
+        
+        this.init();
+    }
+    
+    init() {
+        this.updateCart();
+        this.attachEventListeners();
+    }
+    
+    attachEventListeners() {
+        // Cart toggle
+        this.cartToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.openCart();
+        });
+        
+        // Cart close
+        this.cartClose.addEventListener('click', () => {
+            this.closeCart();
+        });
+        
+        // Overlay close
+        this.cartOverlay.addEventListener('click', () => {
+            this.closeCart();
+        });
+        
+        // Continue shopping
+        this.btnContinue.addEventListener('click', () => {
+            this.closeCart();
+        });
+        
+        // Checkout
+        this.btnCheckout.addEventListener('click', () => {
+            this.checkout();
+        });
+        
+        // Add to cart buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('.btn-order, .btn-vaccine-order')) {
+                e.preventDefault();
+                this.addToCart(e.target);
+            }
+        });
+    }
+    
+    addToCart(button) {
+        const product = {
+            id: button.dataset.product,
+            name: button.dataset.name,
+            price: parseFloat(button.dataset.price),
+            quantity: 1
+        };
+        
+        // Check if item already exists
+        const existingItem = this.items.find(item => item.id === product.id);
+        
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            this.items.push(product);
+        }
+        
+        this.saveCart();
+        this.updateCart();
+        this.showNotification(`${product.name} added to cart!`, 'success');
+        
+        // Add animation to button
+        button.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            button.style.transform = 'scale(1)';
+        }, 200);
+    }
+    
+    removeFromCart(productId) {
+        this.items = this.items.filter(item => item.id !== productId);
+        this.saveCart();
+        this.updateCart();
+        this.showNotification('Item removed from cart', 'info');
+    }
+    
+    updateQuantity(productId, change) {
+        const item = this.items.find(item => item.id === productId);
+        if (item) {
+            item.quantity += change;
+            if (item.quantity <= 0) {
+                this.removeFromCart(productId);
+            } else {
+                this.saveCart();
+                this.updateCart();
+            }
+        }
+    }
+    
+    updateCart() {
+        // Update cart count
+        const totalItems = this.items.reduce((sum, item) => sum + item.quantity, 0);
+        this.cartCount.textContent = totalItems;
+        
+        // Update cart items display
+        if (this.items.length === 0) {
+            this.cartItems.innerHTML = `
+                <div class="cart-empty">
+                    <span class="empty-icon">🛒</span>
+                    <p>Your cart is empty</p>
+                    <small>Add some products to get started!</small>
+                </div>
+            `;
+        } else {
+            this.cartItems.innerHTML = this.items.map(item => `
+                <div class="cart-item">
+                    <div class="cart-item-image">${this.getProductIcon(item.id)}</div>
+                    <div class="cart-item-details">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">USD ${item.price.toFixed(2)}</div>
+                        <div class="cart-item-quantity">
+                            <button class="quantity-btn" onclick="cart.updateQuantity('${item.id}', -1)">−</button>
+                            <span class="quantity-display">${item.quantity}</span>
+                            <button class="quantity-btn" onclick="cart.updateQuantity('${item.id}', 1)">+</button>
+                        </div>
+                    </div>
+                    <button class="cart-item-remove" onclick="cart.removeFromCart('${item.id}')">Remove</button>
+                </div>
+            `).join('');
+        }
+        
+        // Update total
+        const total = this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        this.cartTotal.textContent = `USD ${total.toFixed(2)}`;
+    }
+    
+    getProductIcon(productId) {
+        const icons = {
+            'day-old-chicks': '🐤',
+            'road-runner-special': '🐥',
+            'newcastle-vaccine': '💉',
+            'bronchitis-vaccine': '🦠',
+            'gumboro-vaccine': '🛡️',
+            'fowl-pox-vaccine': '🐓',
+            'antibiotic': '💊',
+            'coccidiostat': '🩹',
+            'dewormer': '🌿',
+            'vitamin-b': '🧴',
+            'calcium': '🥚',
+            'probiotics': '🌾',
+            'protein': '💪',
+            'electrolytes': '🌊',
+            'syringes': '💉',
+            'thermometer': '🌡️',
+            'disinfectant': '🧴',
+            'first-aid': '📦'
+        };
+        return icons[productId] || '📦';
+    }
+    
+    saveCart() {
+        localStorage.setItem('cartItems', JSON.stringify(this.items));
+    }
+    
+    openCart() {
+        this.cartSidebar.classList.add('active');
+        this.cartOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    closeCart() {
+        this.cartSidebar.classList.remove('active');
+        this.cartOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    checkout() {
+        if (this.items.length === 0) {
+            this.showNotification('Your cart is empty!', 'error');
+            return;
+        }
+        
+        // Scroll to contact form and pre-fill with cart items
+        document.getElementById('contact').scrollIntoView({
+            behavior: 'smooth'
+        });
+        
+        setTimeout(() => {
+            const messageField = document.getElementById('message');
+            const cartSummary = this.items.map(item => 
+                `${item.name} x${item.quantity} = USD ${(item.price * item.quantity).toFixed(2)}`
+            ).join('\n');
+            
+            const total = this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            messageField.value = `I would like to order:\n\n${cartSummary}\n\nTotal: USD ${total.toFixed(2)}\n\nPlease contact me to complete this order.`;
+            messageField.focus();
+            
+            this.closeCart();
+        }, 1000);
+    }
+    
+    showNotification(message, type = 'info') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8'};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+    }
+}
+
+// Initialize cart
+const cart = new ShoppingCart();
+
 // Newsletter Section Functionality
 document.addEventListener('DOMContentLoaded', function() {
     const newsletterForm = document.getElementById('newsletterForm');
