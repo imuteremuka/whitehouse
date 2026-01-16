@@ -1574,6 +1574,185 @@ body {
     }
 }
 
+/* Vaccination Guidelines Specific Styles */
+.guidelines-section {
+    margin-bottom: 2rem;
+}
+
+.guidelines-section h4 {
+    color: #8B4513;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.featured-intro {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    font-style: italic;
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 10px;
+    border-left: 4px solid #8B4513;
+}
+
+.zimbabwe-advice {
+    background: #e9ecef;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    font-weight: 500;
+    color: #333;
+}
+
+.best-practices {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.best-practices h5 {
+    color: #8B4513;
+    margin-bottom: 0.5rem;
+}
+
+.seasonal-note {
+    background: #fff3cd;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    border-left: 4px solid #ffc107;
+    color: #856404;
+}
+
+.vaccination-list,
+.equipment-list,
+.storage-list,
+.timing-list,
+.method-list,
+.water-list,
+.stress-list,
+.records-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.vaccination-list li,
+.equipment-list li,
+.storage-list li,
+.timing-list li,
+.method-list li,
+.water-list li,
+.stress-list li,
+.records-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    color: #555;
+    line-height: 1.5;
+}
+
+.vaccination-list li:last-child,
+.equipment-list li:last-child,
+.storage-list li:last-child,
+.timing-list li:last-child,
+.method-list li:last-child,
+.water-list li:last-child,
+.stress-list li:last-child,
+.records-list li:last-child {
+    border-bottom: none;
+}
+
+.after-care-section {
+    margin-top: 2rem;
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    border-top: 2px solid #8B4513;
+}
+
+.after-care-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.after-care-list li {
+    padding: 0.5rem 0;
+    color: #555;
+    line-height: 1.5;
+}
+
+.final-reminder {
+    background: linear-gradient(45deg, #8B4513, #D2691E);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-top: 2rem;
+}
+
+.final-reminder h5 {
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.final-reminder p {
+    margin-bottom: 1rem;
+}
+
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.benefits-list li {
+    padding: 0.5rem 0;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.5;
+}
+
+.conclusion {
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+/* Responsive Design for Vaccination Guidelines */
+@media (max-width: 768px) {
+    .guidelines-section h4 {
+        font-size: 1.1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+    }
+    
+    .featured-intro {
+        font-size: 1rem;
+        padding: 0.8rem;
+    }
+    
+    .best-practices,
+    .zimbabwe-advice,
+    .seasonal-note {
+        padding: 0.8rem;
+        margin: 0.8rem 0;
+    }
+    
+    .after-care-section {
+        padding: 1rem;
+    }
+    
+    .final-reminder {
+        padding: 1rem;
+    }
+}
+
 /* Knowledge Base Section */
 .knowledge {
     padding: 5rem 0;
